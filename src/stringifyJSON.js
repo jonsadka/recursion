@@ -3,7 +3,9 @@
 
 // but you don't so you're going to write it from scratch:
 var stringifyJSON = function(obj) {
-  if (obj === undefined){
+  if (obj === undefined) {
+    return;
+  } else if (Object.prototype.toString.call(obj) === '[object Function]'){
     return;
   }
 
@@ -11,11 +13,15 @@ var stringifyJSON = function(obj) {
 
   if (Object.prototype.toString.call(obj) === '[object Object]'){
     string = '{';
+    for (key in obj){
+      if ((obj[key] === undefined) || (Object.prototype.toString.call(obj[key]) === '[object Function]')){
+        delete obj[key];
+      } else{
+        string = string + stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
+      }
+    }
     if (Object.getOwnPropertyNames(obj).length === 0){
       string = string + '{';
-    }
-    for (key in obj){
-      string = string + stringifyJSON(key) + ':' + stringifyJSON(obj[key]) + ',';
     }
     return string.slice(0,-1) + '}';
   } else if (Object.prototype.toString.call(obj) === '[object Array]'){
