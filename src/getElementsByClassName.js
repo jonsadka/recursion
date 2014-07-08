@@ -5,45 +5,48 @@
 
 // But instead we're going to implement it from scratch:
 var getElementsByClassName = function(className){
-	var webpage = document.childNodes;
 	var result = [];
- 	
- 	var find = function(collection, className){
- 		 		
- 		for (var i=0; i<collection.length; i++){
-			
-			//first case runs if no child nodes are present, oterwise case two applies
-			if (!collection[i].hasChildNodes()){
-				if ( (collection[i].outerHTML !== undefined) && (collection[i].outerHTML.search('class=\"targetClassName\"') > -1) ){
-	 				result.push(collection[i]);
-	 				console.log(collection[i]);
-	 				console.log("~~~~SUCCESS!"); 										
-				}
-			} else {
-	 			var nodes = collection[i].childNodes;
-				for (var j=0; j<nodes.length; j++){
+	console.log('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXNEWXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+ 	var find = function(collection){
+ 		console.log(collection);
+ 		console.log(collection.childNodes);
+ 		
+ 		if (collection.className === className){
+ 			result.push(collection);
+ 		} 
 
-					//check each current node for correct classname
-					if (nodes[j].toString() === "[object Text]"){
-					} else if ( nodes[j].outerHTML.search('class=\"' + className + '\"') > -1){
-		 					result.push(nodes[j]);
-		 					console.log(nodes[j]);
-		 					console.log("~~~~SUCCESS!"); 							
-	 				}								
-	 			
-	 				//applies recursion for nodes contained within nodes
-	 				if (nodes[j].childNodes.length !== 0){
-	 					find(nodes[j].childNodes); 
-	 				}
-	 			}				
-			}
- 		}
+		console.log("Collection has child nodes: " + collection.hasChildNodes());
+ 		if (collection.hasChildNodes()){
+ 			console.log("There are " +collection.childNodes.length+ " child nodes");
+ 			var nodes = collection.childNodes;
+ 			for (var i=0; i<nodes.length; i++){
+ 				
+ 				console.log('------Node-----');
+ 				console.log(nodes[i]);
+ 				console.log("Has "+nodes[i].childNodes.length+" child nodes: " + nodes[i].hasChildNodes());
+ 				if (nodes[i].hasChildNodes()){
+ 					console.log("___Run find() on these "+nodes[i].childNodes.length+" nodes___");
+ 					for (var j=0; j<nodes[i].childNodes.length; j++){
+ 						//console.log(nodes[i].childNodes[j]);
+  					find(nodes[i].childNodes[j]);	 							
+ 					}
+ 				} else {
+ 					if (nodes[i].classList){
+ 						for (var k=0; k<nodes[i].classList.length; k++){
+ 							if (nodes[i].classList[k] === className){
+ 								result.push(nodes[i]);
+ 							}
+ 						}
+ 					}
+ 				}
+ 			}
+ 		} 
+
 	 }
 
- 	find(webpage, 'targetClassName');
+ 	find(document.body);
 
- 	//console.log("XXXXXXXXXXXXXRESULTXXXXXXXXXXX");
+ 	console.log('_______________________RESULT___________________');
  	console.log(result);
- 	//return result;
-
+ 	return result;
 };
